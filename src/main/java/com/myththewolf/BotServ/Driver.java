@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.security.auth.login.LoginException;
 
+import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.JarFileLoader;
 import com.myththewolf.BotServ.lib.tool.Tools;
 
@@ -15,7 +16,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 public class Driver {
 	public static BotServ main;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws LoginException, InterruptedException, RateLimitedException {
 		System.out.println("[BotServ]Loadings configuration..");
 		File RUN_DIR = new File("run/");
 		File CONF = new File("run/settings.json");
@@ -33,20 +34,13 @@ public class Driver {
 			try {
 				main = new BotServ();
 				JDA runner = new JDABuilder(AccountType.BOT).setToken("MzU2OTUwNzgzNTIwMTQ1NDA4.DJs3sQ.LBVl7WtpGcB95McUwVhLkE08vhM").buildBlocking();
-				runner.asBot();
+				runner.addEventListener(new UserChat(main.getEventManager()));
+				//runner.asBot();
 				JarFileLoader JJ = new JarFileLoader();
-				JJ.loadJar(new File("C:\\Users\\100048201\\eclipse-workspace\\Temp\\myJar.jar"));
-				JJ.enablePlugin("MyCoolPlugin");
-			} catch (LoginException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			
+				
+				
 			} catch (IllegalArgumentException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (RateLimitedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
