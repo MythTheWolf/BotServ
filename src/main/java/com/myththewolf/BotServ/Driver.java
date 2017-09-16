@@ -4,8 +4,6 @@ import java.io.File;
 
 import javax.security.auth.login.LoginException;
 
-import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
-import com.myththewolf.BotServ.lib.API.invoke.JarFileLoader;
 import com.myththewolf.BotServ.lib.tool.Tools;
 
 import net.dv8tion.jda.core.AccountType;
@@ -14,8 +12,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class Driver {
-	public static BotServ main;
-
+	
 	public static void main(String[] args) throws LoginException, InterruptedException, RateLimitedException {
 		System.out.println("[BotServ]Loadings configuration..");
 		File RUN_DIR = new File("run/");
@@ -24,19 +21,19 @@ public class Driver {
 			if (!RUN_DIR.exists()) {
 				System.err.println("[BotServ]No run dir, making run and config");
 				RUN_DIR.mkdirs();
-				Tools.ExportResource("settings.json", BotServ.class, "run/settings.json");
+				Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
 			}
 
 			if (!CONF.exists()) {
 				System.err.println("[BotServ]No config found, generating one for you.");
-				Tools.ExportResource("settings.json", BotServ.class, "run/settings.json");
+				Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
 			}
 			try {
-				main = new BotServ();
+		
 				JDA runner = new JDABuilder(AccountType.BOT).setToken("MzU2OTUwNzgzNTIwMTQ1NDA4.DJs3sQ.LBVl7WtpGcB95McUwVhLkE08vhM").buildBlocking();
-				runner.addEventListener(new UserChat(main.getEventManager()));
-				//runner.asBot();
-				JarFileLoader JJ = new JarFileLoader();
+				
+				
+				//JarFileLoader JJ = new JarFileLoader();
 			
 				
 				

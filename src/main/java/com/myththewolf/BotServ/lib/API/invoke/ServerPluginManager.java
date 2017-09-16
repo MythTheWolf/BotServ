@@ -17,17 +17,15 @@ import java.util.jar.JarFile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.myththewolf.BotServ.BotServ;
-import com.myththewolf.BotServ.Driver;
+import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 
-public class JarFileLoader {
+public class ServerPluginManager {
 	private File PLUGIN_DIR;
 	private File CURRENT_DIR;
 	private HashMap<String, Class<?>> classes = new HashMap<>();
-	private HashMap<String, String> pluginMeta = new HashMap<>();
-	private long order = 1;
-
-	public JarFileLoader() throws IOException {
+	private static HashMap<String, DiscordPlugin> pluginMeta = new HashMap<>();
+	
+	public ServerPluginManager() throws IOException {
 		System.out.println("[BotServ]Starting JarLoader....");
 		CURRENT_DIR = new File(System.getProperty("user.dir"));
 		PLUGIN_DIR = new File(System.getProperty("user.dir") + "plugins/");
@@ -72,6 +70,7 @@ public class JarFileLoader {
 			className = className.replace('/', '.');
 			c = cl.loadClass(className);
 			Object obj = c.newInstance();
+			JSONObject runconfig;
 			if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
 				System.err.println("[BotServ]Error while importing " + pathToJar + ": No runtime config.");
 				continue;
@@ -87,13 +86,17 @@ public class JarFileLoader {
 				if (build.equals("")) {
 					throw new JSONException("");
 				}
-				JSONObject runconfig = new JSONObject(build);
+				runconfig = new JSONObject(build);
 				String MAIN = runconfig.getString("main");
 				String NAME = runconfig.getString("name");
-
-				if (MAIN == null || NAME == null || MAIN.equals("") || NAME.equals("") || MAIN.equals(" ")
-						|| NAME.equals(" ")) {
-					System.err.println("Error while importing " + pathToJar + ": Main class or Name is NULL");
+				String AUTH = runconfig.getString("author");
+				String DESC = runconfig.getString("description");
+				String SHORTDESC = runconfig.getString("shortDescription");
+				String WEBSITE = runconfig.getString("projectURL");
+				String VERSION = runconfig.getString("version");
+			
+				if (empty(MAIN) || empty(NAME) || empty(AUTH) || empty(DESC) || empty(SHORTDESC) || empty(WEBSITE) || empty(VERSION)) {
+					System.err.println("Error while importing " + pathToJar + ": Key in runconfig.json is empty or null");
 					continue;
 				} else {
 					if (!(obj instanceof BotPlugin) && !c.getName().equals(MAIN)) {
@@ -103,14 +106,11 @@ public class JarFileLoader {
 								+ " does not implement " + BotPlugin.class.getName());
 						continue;
 					}
-					JSONObject meta = new JSONObject();
-
+					
+					runconfig.put("ENABLED", false);
 					classes.put(NAME, c);
-					meta.put("enabled", false);
-					meta.put("position", order);
-					meta.put("main", MAIN);
-					order++;
-					pluginMeta.put(NAME, meta.toString());
+				
+					pluginMeta.put(NAME, new DiscordPlugin(runconfig));
 
 				}
 			} catch (JSONException ex) {
@@ -122,17 +122,17 @@ public class JarFileLoader {
 		}
 		jarFile.close();
 	}
-
+	protected static DiscordPlugin forName(String name) {
+		return ServerPluginManager.pluginMeta.get(name);
+	}
 	public void enablePlugin(String name) {
 		Class<?> RunnerClass = this.classes.get(name);
 		try {
-			Method M = RunnerClass.getMethod("onEnable", BotServ.class);
+			Method M = RunnerClass.getMethod("onEnable", DiscordPlugin.class);
 			Object OB = RunnerClass.newInstance();
-			boolean result = (boolean) M.invoke(OB, Driver.main);
+			boolean result = (boolean) M.invoke(OB, forName(name));
 			if (result) {
-				JSONObject ob = new JSONObject(pluginMeta.get(name));
-				ob.put("enabled", true);
-				pluginMeta.put(name, ob.toString());
+				ServerPluginManager.pluginMeta.get(name).setEnabled(true);
 			}
 		} catch (NoSuchMethodException | SecurityException e) {
 			System.err.println("[BotServ]Error while enabling plugin " + name);
@@ -159,12 +159,19 @@ public class JarFileLoader {
 	public File getWorkingDir() {
 		return this.PLUGIN_DIR;
 	}
-
+	public static DiscordPlugin[] getPlugins() throws IllegalAccessException {
+		if(!new Exception().getStackTrace()[1].getClassName().equals(UserChat.class.getName())) {
+			throw new IllegalAccessException("Can't access other plugins out from a Engine class");
+		}
+		return ServerPluginManager.getPlugins();
+	}
 	public InputStream getExternalResource(File theJar, String pathInJar) throws IOException {
 
 		URL url = new URL("jar:file:" + theJar.getAbsolutePath() + "!/" + pathInJar);
 		InputStream is = url.openStream();
 		return is;
 	}
-
+	private boolean empty(String e) {
+		return (e == null || e.equals("") || e.equals(" "));
+	}
 }
