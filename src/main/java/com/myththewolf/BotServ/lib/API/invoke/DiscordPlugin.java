@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.myththewolf.BotServ.lib.API.command.CommandExecutor;
+import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventListener;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
-import com.myththewolf.BotServ.lib.API.event.engines.CommandExecutor;
-import com.myththewolf.BotServ.lib.API.event.engines.DiscordCommand;
 
 public class DiscordPlugin {
 	private File PLUGIN_DIR;

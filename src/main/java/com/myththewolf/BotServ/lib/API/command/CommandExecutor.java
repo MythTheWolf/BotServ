@@ -1,4 +1,4 @@
-package com.myththewolf.BotServ.lib.API.event.engines;
+package com.myththewolf.BotServ.lib.API.command;
 
 public interface CommandExecutor {
 	public void onCommand(DiscordCommand theCommand);

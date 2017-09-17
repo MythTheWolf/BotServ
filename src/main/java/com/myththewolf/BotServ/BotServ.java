@@ -1,5 +1,6 @@
 package com.myththewolf.BotServ;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 import net.dv8tion.jda.core.JDA;
@@ -20,6 +21,6 @@ public class BotServ {
 		keyboard.close();
 	}
 	private static void handleInput(String[] handle) {
-		
+		System.out.println("Got command string: " + Arrays.toString(handle));
 	}
 }

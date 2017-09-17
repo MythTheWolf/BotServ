@@ -17,6 +17,9 @@ public class UserChat extends ListenerAdapter{
 	}
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
+		if(!event.getGuild().getId().equals("93446384836939776")) {
+			return;
+		}
 		if(event.getMessage().getContent().equals("poontah")) {
 			event.getChannel().sendMessage("POONTAH!").queue();
 		}

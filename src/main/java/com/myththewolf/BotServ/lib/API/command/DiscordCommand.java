@@ -1,4 +1,4 @@
-package com.myththewolf.BotServ.lib.API.event.engines;
+package com.myththewolf.BotServ.lib.API.command;
 
 import java.awt.Color;
 
@@ -58,7 +58,7 @@ public class DiscordCommand {
 		e.getChannel().sendMessage(eb.build()).queue();
 	}
 	protected void runCommand() {
-		
+		ex.onCommand(this);
 	}
 	
 }
