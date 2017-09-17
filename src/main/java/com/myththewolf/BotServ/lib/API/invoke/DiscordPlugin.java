@@ -102,4 +102,7 @@ public class DiscordPlugin {
 		}
 		
 	}
+	public List<EventEntry> getEventList(EventType e){
+		return this.events.get(e);
+	}
 }

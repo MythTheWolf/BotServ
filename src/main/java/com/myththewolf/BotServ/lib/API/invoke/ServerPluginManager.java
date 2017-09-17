@@ -9,15 +9,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 
 public class ServerPluginManager {
 	private File PLUGIN_DIR;
@@ -159,11 +161,15 @@ public class ServerPluginManager {
 	public File getWorkingDir() {
 		return this.PLUGIN_DIR;
 	}
-	public static DiscordPlugin[] getPlugins() throws IllegalAccessException {
-		if(!new Exception().getStackTrace()[1].getClassName().equals(UserChat.class.getName())) {
-			throw new IllegalAccessException("Can't access other plugins out from a Engine class");
-		}
-		return ServerPluginManager.getPlugins();
+	public static List<DiscordPlugin> getPlugins() throws IllegalAccessException {
+		List<DiscordPlugin> pls = new ArrayList<>();
+		Iterator it = pluginMeta.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        pls.add((DiscordPlugin) pair.getValue());
+	        
+	    }
+		return pls;
 	}
 	public InputStream getExternalResource(File theJar, String pathInJar) throws IOException {
 

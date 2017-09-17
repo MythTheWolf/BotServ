@@ -22,7 +22,7 @@ public class EventEntry {
 
 	public static boolean verify(Method M) {
 		return ((M.getParameterTypes().length > 0)
-				|| (EventType.valueOf(M.getParameterTypes()[0].getSimpleName()) != null));
+				&& (EventType.valueOf(M.getParameterTypes()[0].getSimpleName()) != null));
 	}
 
 	public static EventType findType(Method M) {
@@ -31,6 +31,7 @@ public class EventEntry {
 
 	public void runEvent(Object EventObject)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		System.out.println("running event....object");
 		this.RunnnerMethod.invoke(this.Runner, EventObject);
 	}
 }
