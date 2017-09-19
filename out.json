@@ -1,0 +1,11 @@
+{
+  "name": "CenteralRepo",
+  "version": "1.0",
+  "plugins":[
+    {
+      "name":"MyPlugin",
+      "location":"serve/test1",
+      "dependencies":[]
+    }
+    ]
+}

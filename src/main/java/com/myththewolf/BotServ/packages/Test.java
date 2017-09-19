@@ -1,13 +1,23 @@
 package com.myththewolf.BotServ.packages;
 
-import com.myththewolf.BotServ.packages.downloader.Progressbar;
+import java.io.IOException;
 
-
+import org.json.JSONException;
 
 public class Test {
-	private static Progressbar pp;
-	public static void main(String[] args) throws InterruptedException {
-		FileDownloader fd = new FileDownloader("http://70.139.52.7/pluginrepo/repo.json");
-		fd.download();
+	public static void main(String[] args) {
+		try {
+			PackageRepo rep = new PackageRepo("http://70.139.52.7/pluginrepo/repo.json");
+			PackageEntry ent = rep.getPackage("MyTestPackage");
+			//System.out.println(ent.getReleases().get(0).getFileURL());
+			String build = "";
+			ent.getDependencies();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
