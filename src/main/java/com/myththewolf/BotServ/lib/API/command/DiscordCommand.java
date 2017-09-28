@@ -1,6 +1,9 @@
 package com.myththewolf.BotServ.lib.API.command;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.myththewolf.BotServ.lib.API.invoke.DiscordPlugin;
 
@@ -17,17 +20,15 @@ public class DiscordCommand {
 		this.meta = meta;
 		ex = CE;
 	}
-	protected void setMessageEvent(MessageReceivedEvent e) {
+	public void setMessageEvent(MessageReceivedEvent e) {
 		this.e = e;
 	}
 	public String[] getArgs() {
-		String[] pop = new String[e.getMessage().getContent().split(" ").length - 1];
-		int pos = 0;
-		for (String I : e.getMessage().getContent().split(" ")) {
-			pop[pos] = I;
-			pos++;
-		}
-		return pop;
+
+		String[] orgin = e.getMessage().getContent().split(" ");
+		List<String> tmp = new ArrayList<String>(Arrays.asList(orgin));
+		tmp.remove(0);
+		return tmp.toArray(new String[orgin.length-1]);
 	}
 
 	public User getSender() {
@@ -35,7 +36,7 @@ public class DiscordCommand {
 	}
 
 	public void deleteTriggerMessage() {
-		e.getMessage().delete();
+		e.getMessage().delete().queue();
 	}
 
 	public void reply(String message) {
@@ -51,13 +52,14 @@ public class DiscordCommand {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Command Failed");
 		eb.setColor(Color.RED);
-		eb.setAuthor(this.getSender().getName(), "", this.getSender().getAvatarUrl());
-		eb.setFooter("", "");
+//		eb.setAuthor(this.getSender().getName(), "", this.getSender().getAvatarUrl());
 		eb.setThumbnail("https://blog.sqlauthority.com/wp-content/uploads/2015/08/erroricon.png");
-		eb.setFooter("_Moduale "+meta.getNAME()+" under BotServ", null);
+		eb.setDescription(message);
+		eb.setFooter("Moduale "+meta.getNAME()+" under FrameBot", null);
 		e.getChannel().sendMessage(eb.build()).queue();
 	}
-	protected void runCommand() {
+
+	public void runCommand() {
 		ex.onCommand(this);
 	}
 	

@@ -25,7 +25,6 @@ public class Progressbar {
 	public void finish() {
 		this.current = this.max;
 		this.printBar(true);
-		Thread.currentThread().stop();
 	}
 
 	public void printBar(boolean finished) {

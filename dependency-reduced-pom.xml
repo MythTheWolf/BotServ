@@ -21,7 +21,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>com.myththewolf.DiscCast.DiscCast</mainClass>
+              <mainClass>com.myththewolf.BotServ.BotServ</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -45,6 +45,11 @@
       <id>central</id>
       <name>bintray</name>
       <url>http://jcenter.bintray.com</url>
+    </repository>
+    <repository>
+      <id>boundless</id>
+      <name>boundless</name>
+      <url>http://repo.boundlessgeo.com/main/</url>
     </repository>
   </repositories>
   <properties>

@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.myththewolf.BotServ.packages.downloader.HTTPUtils;
+import com.myththewolf.BotServ.packages.downloader.Utils;
 
 public class PackageRepo {
 	private JSONObject master;
@@ -17,21 +16,36 @@ public class PackageRepo {
 
 	public PackageRepo(String URL) throws JSONException, IOException {
 		absoluteURL = URL;
-		master = HTTPUtils.readJsonFromUrl(URL);
-		JSONArray packs = master.getJSONArray("packages");
-		for (int i = 0; i < packs.length(); i++) {
-			JSONObject pack = packs.getJSONObject(i);
-			packages.add(new PackageEntry(pack.getString("name"), this));
-		}
+		master = Utils.readJsonFromUrl(URL);
+		packages = getPackages();
 	}
 
 	public PackageEntry getPackage(String name) {
 		for (PackageEntry e : this.packages) {
+			
 			if (e.getName().equals(name)) {
 				return e;
 			}
 		}
 		return null;
+	}
+	public boolean containsPackage(String name) {
+		for(PackageEntry e : this.packages) {
+			if(e.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public List<PackageEntry> getPackages() throws JSONException, IOException {
+		for (int i = 0; i < this.master.getJSONArray("packages").length(); i++) {
+			PackageEntry pack = new PackageEntry(
+					this.master.getJSONArray("packages").getJSONObject(i).getString("name"), this);
+			if(!containsPackage(pack.getName())) {
+				this.packages.add(pack);
+			}
+		}
+		return packages;
 	}
 
 	public JSONObject getRepoJSON() {
@@ -46,4 +60,8 @@ public class PackageRepo {
 		return getAbsoluteURL() + "" + this.master.getString("repoBase");
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return this.master.equals(((PackageRepo) obj).master);
+	}
 }

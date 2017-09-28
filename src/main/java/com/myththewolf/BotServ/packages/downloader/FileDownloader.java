@@ -7,85 +7,87 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FileDownloader implements Runnable{
+public class FileDownloader {
 	private URL fileURL;
 	private File out;
-	private URL[] fileSet;
-	private File[] outs;
-	private Progressbar shower;
+	private List<URL> fileSet = new ArrayList<>();
+	private List<File> outs = new ArrayList<>();
 	private String text;
+	private Progressbar shower;
 	private boolean isSet;
-	public FileDownloader(String URL, File output,String text2show) throws MalformedURLException {
+	private List<String> stringSet = new ArrayList<>();
+
+	public FileDownloader(String URL, File output, String text2show) throws MalformedURLException {
 		fileURL = new URL(URL);
 		out = output;
 		text = text2show;
 		isSet = false;
 	}
-	public FileDownloader(URL[] set,File[] outputs) {
+
+	public FileDownloader(List<URL> set, List<File> outputs, List<String> texts) {
 		this.outs = outputs;
 		this.fileSet = set;
 		isSet = true;
+		stringSet = texts;
 	}
-	public void run() {
-		if(isSet) {
+
+	public void run() throws IOException {
+		if (isSet) {
 			int pos = 0;
-			for(URL i : this.fileSet) {
-				try {
-					download(i, outs[pos]);
-				} catch (IOException e) {
-					System.err.println("Could not download/save: " + i.toString());
-				}
+			for (URL i : this.fileSet) {
+				download(i, outs.get(pos), stringSet.get(pos));
+				pos++;
 			}
-		}else {
-			try {
-				download(fileURL, out);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} else {
+
+			download(fileURL, out, text);
+
 		}
 	}
-	private int getFileSize(URL url) {
-	    HttpURLConnection conn = null;
-	    try {
-	        conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("HEAD");
-	        conn.getInputStream();
-	        return conn.getContentLength();
-	    } catch (IOException e) {
-	        return -1;
-	    } finally {
-	        conn.disconnect();
-	    }
-	}
-	public void download(URL remote,File file) throws IOException {
-		 BufferedInputStream bis = null;
-		 FileOutputStream fis = null;
+
+	public static long getFileSize(URL url) {
+		HttpURLConnection conn = null;
 		try {
-			this.shower = new Progressbar(getFileSize(fileURL), text);
-			
-	        bis = new BufferedInputStream(remote.openStream());
-	        fis = new FileOutputStream(file);
-	        long numBytes = 0;
-	        byte[] buffer = new byte[1024];
-	        int count=0;
-	        while((count = bis.read(buffer,0,1024)) != -1)
-	        {
-	        	numBytes = numBytes + 1024;
-	            fis.write(buffer, 0, count);
-	            this.shower.setVal(numBytes);
-	            this.shower.printBar(false);
-	        }
-	        
-	        
-			}catch(Exception e) {
-				e.printStackTrace();
-				
-			}finally {
-				this.shower.finish();
-				fis.close();
-				bis.close();
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("HEAD");
+			conn.getInputStream();
+			return conn.getContentLength();
+		} catch (IOException e) {
+			return -1;
+		} finally {
+			conn.disconnect();
+		}
+	}
+
+	public void download(URL remote, File file, String info) throws IOException {
+		BufferedInputStream bis = null;
+		FileOutputStream fis = null;
+		try {
+			this.shower = new Progressbar(getFileSize(remote), info);
+
+			bis = new BufferedInputStream(remote.openStream());
+			fis = new FileOutputStream(file);
+			long numBytes = 0;
+			byte[] buffer = new byte[1024];
+			int count = 0;
+			while ((count = bis.read(buffer, 0, 1024)) != -1) {
+				numBytes = numBytes + 1024;
+				fis.write(buffer, 0, count);
+				this.shower.setVal(numBytes);
+				this.shower.printBar(false);
 			}
+			fis.close();
+			bis.close();
+		} catch (Exception e) {
+			throw e;
+
+		} finally {
+			//fis.close();
+			//bis.close();
+		
+		}
 	}
 }

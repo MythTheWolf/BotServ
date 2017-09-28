@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -30,7 +31,7 @@ public class ServerPluginManager {
 	public ServerPluginManager() throws IOException {
 		System.out.println("[BotServ]Starting JarLoader....");
 		CURRENT_DIR = new File(System.getProperty("user.dir"));
-		PLUGIN_DIR = new File(System.getProperty("user.dir") + "plugins/");
+		PLUGIN_DIR = new File(System.getProperty("user.dir") + "/run/plugins/");
 		if (!PLUGIN_DIR.exists()) {
 			if (!CURRENT_DIR.canWrite()) {
 				throw new IOException("Can't create plugin dir");
@@ -54,6 +55,10 @@ public class ServerPluginManager {
 	public void loadJar(File theJarFile)
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
 			NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+		if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
+			System.err.println("[BotServ]Error while importing " + theJarFile.getAbsolutePath() + ": No runtime config.");
+			return;
+		}
 		System.out.println("[BotServ]Importing " + theJarFile.getName() + " to classpath...");
 		String pathToJar = theJarFile.getAbsolutePath();
 		JarFile jarFile = new JarFile(pathToJar);
@@ -73,10 +78,7 @@ public class ServerPluginManager {
 			c = cl.loadClass(className);
 			Object obj = c.newInstance();
 			JSONObject runconfig;
-			if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
-				System.err.println("[BotServ]Error while importing " + pathToJar + ": No runtime config.");
-				continue;
-			}
+			
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(this.getExternalResource(theJarFile, "runconfig.json")));
 			String build = "";
@@ -113,7 +115,7 @@ public class ServerPluginManager {
 					classes.put(NAME, c);
 				
 					pluginMeta.put(NAME, new DiscordPlugin(runconfig));
-
+					enablePlugin(NAME);
 				}
 			} catch (JSONException ex) {
 				ex.printStackTrace();
@@ -163,19 +165,22 @@ public class ServerPluginManager {
 	}
 	public static List<DiscordPlugin> getPlugins() throws IllegalAccessException {
 		List<DiscordPlugin> pls = new ArrayList<>();
-		Iterator it = pluginMeta.entrySet().iterator();
+		Iterator<Entry<String, DiscordPlugin>> it = pluginMeta.entrySet().iterator();
 	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry)it.next();
+	        Map.Entry<String,DiscordPlugin> pair = (Map.Entry<String,DiscordPlugin>)it.next();
 	        pls.add((DiscordPlugin) pair.getValue());
 	        
 	    }
 		return pls;
 	}
-	public InputStream getExternalResource(File theJar, String pathInJar) throws IOException {
-
+	public InputStream getExternalResource(File theJar, String pathInJar)  {
+		try {
 		URL url = new URL("jar:file:" + theJar.getAbsolutePath() + "!/" + pathInJar);
 		InputStream is = url.openStream();
 		return is;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 	private boolean empty(String e) {
 		return (e == null || e.equals("") || e.equals(" "));

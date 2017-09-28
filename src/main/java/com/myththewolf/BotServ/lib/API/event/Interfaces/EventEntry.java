@@ -21,17 +21,31 @@ public class EventEntry {
 	}
 
 	public static boolean verify(Method M) {
-		return ((M.getParameterTypes().length > 0)
-				&& (EventType.valueOf(M.getParameterTypes()[0].getSimpleName()) != null));
+		boolean OK = true;
+		try {
+			
+			if (!(M.getParameterTypes().length > 0)) {
+			
+				OK = false;
+			}
+			if ((EventType.valueOf(M.getParameterTypes()[0].getSimpleName()) == null)) {
+				
+				OK = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			OK = false;
+		}
+		return OK;
 	}
 
 	public static EventType findType(Method M) {
+
 		return EventType.valueOf(M.getParameterTypes()[0].getSimpleName());
 	}
 
 	public void runEvent(Object EventObject)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		System.out.println("running event....object");
 		this.RunnnerMethod.invoke(this.Runner, EventObject);
 	}
 }

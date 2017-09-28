@@ -2,6 +2,8 @@ package com.myththewolf.BotServ;
 
 import java.io.File;
 
+import javax.security.auth.login.LoginException;
+
 import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.tool.Tools;
@@ -10,12 +12,14 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 
-public class Driver implements Runnable{
-	
+public class Driver implements Runnable {
+	public static File CONF;
+	protected static JDA runner;
+
 	public void run() {
 		System.out.println("[BotServ]Loading configuration");
 		File RUN_DIR = new File("run/");
-		File CONF = new File("run/settings.json");
+		CONF = new File("run/settings.json");
 		try {
 			if (!RUN_DIR.exists()) {
 				System.err.println("[BotServ]No run dir, making run and config");
@@ -28,23 +32,25 @@ public class Driver implements Runnable{
 				Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
 			}
 			try {
-				System.out.println("[BotServ]Config OK,attempting login!");
-				JDA runner = new JDABuilder(AccountType.CLIENT).setToken("MjMwMTY2MjI1MTM1NTk5NjE4.DJR0fA.H1inhTyIOB5Hcym7zZR9vUHXVPg").buildBlocking();
-				runner.addEventListener(new UserChat());
 				ServerPluginManager man = new ServerPluginManager();
-				man.loadJar(new File("myJar.jar"));
-				man.enablePlugin("MyCoolPlugin");
+				man.loadDir();
+				System.out.println("[BotServ]Config OK,attempting login!");
+				runner = new JDABuilder(AccountType.CLIENT)
+						.setToken("MjMwMTY2MjI1MTM1NTk5NjE4.DJR0fA.H1inhTyIOB5Hcym7zZR9vUHXVPg").buildBlocking();
+				runner.addEventListener(new UserChat());
 				System.out.println("[BotServ]System up.");
 				BotServ.ready(runner);
-				
 			} catch (IllegalArgumentException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (LoginException e) {
+				System.err.println("[BotServ]Login failed.. exiting.");
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("[BotServ]Could not write file(s) to disk. Shutting down.");
-			System.exit(0);
+			System.err.println("[BotServ]Exception in main thread:");
+			e.printStackTrace();
 		}
 
 	}

@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -11,9 +12,21 @@
 			<name>bintray</name>
 			<url>http://jcenter.bintray.com</url>
 		</repository>
+		<repository>
+			<id>boundless</id>
+			<name>boundless</name>
+			<url>http://repo.boundlessgeo.com/main/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
+		<dependency>
+			<groupId>org.beanshell</groupId>
+			<artifactId>bsh</artifactId>
+			<version>2.1b5</version>
+		</dependency>
+
 		<dependency>
 			<groupId>me.tongfei</groupId>
 			<artifactId>progressbar</artifactId>
@@ -53,7 +66,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.myththewolf.DiscCast.DiscCast</mainClass>
+							<mainClass>com.myththewolf.BotServ.BotServ</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

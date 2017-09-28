@@ -2,6 +2,8 @@ package com.myththewolf.BotServ.lib.API.event.engines;
 
 import java.lang.reflect.InvocationTargetException;
 
+import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
+import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
 import com.myththewolf.BotServ.lib.API.invoke.DiscordPlugin;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
@@ -10,27 +12,24 @@ import com.myththewolf.BotServ.lib.event.Objects.UserSendEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-public class UserChat extends ListenerAdapter{
+public class UserChat extends ListenerAdapter {
+
 	
-	public UserChat() {
-	
-	}
+
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		if(!event.getGuild().getId().equals("93446384836939776")) {
-			return;
-		}
-		if(event.getMessage().getContent().equals("poontah")) {
-			event.getChannel().sendMessage("POONTAH!").queue();
-		}
 		try {
-			for(DiscordPlugin pl : ServerPluginManager.getPlugins()) {
-				System.err.println("IN_LOOP");
-				if(pl.getEventList(EventType.UserSendEvent).size() > -1) {
-					pl.getEventList(EventType.UserSendEvent).get(0).runEvent(new UserSendEvent(event));
+			for(DiscordPlugin I : ServerPluginManager.getPlugins()) {
+				if(I.getCommands().containsKey(event.getMessage().getContent().split(" ")[0])) {
 					
-				}else {
-					
+					DiscordCommand DC = I.getCommands().get(event.getMessage().getContent().split(" ")[0]);
+					DC.setMessageEvent(event);
+					DC.runCommand();
+				}
+				if(I.isEnabled() && I.getEventList(EventType.UserSendEvent).size() > 0) {
+					for(EventEntry EE : I.getEventList(EventType.UserSendEvent)) {
+						EE.runEvent(new UserSendEvent(event));
+					}
 				}
 			}
 		} catch (IllegalAccessException e) {
