@@ -14,25 +14,14 @@ import com.myththewolf.BotServ.packages.downloader.Utils;
 public class PackageEntry {
 	public String PackageName;
 	public String absoluteURL;
-	public JSONObject packageMeta;
+
 	public PackageRepo repo;
 	public List<PackageEntry> dependencies = new ArrayList<>();
 
 	public PackageEntry(String name, PackageRepo rep) {
 		repo = rep;
 		PackageName = name;
-		try {
-
-			packageMeta = Utils.readJsonFromUrl(repo.getDistroURL() + name + "/" + "plugin.json");
-			// Checking dependencies
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 	}
 
@@ -40,18 +29,20 @@ public class PackageEntry {
 		return repo.getDistroURL() + getName() + "/";
 	}
 
-	public PackageRelease getRelease(String tag) {
-		return new PackageRelease(this, packageMeta.getJSONObject("releases").getJSONObject(tag));
+	public PackageRelease getRelease(String tag) throws JSONException, IOException {
+	    JSONObject packet = Utils.readJsonFromUrl(repo.getAbsoluteURL()+"?a=getReleases&name="+this.PackageName);
+		return new PackageRelease(this, packet.getJSONObject(tag));
 	}
 
 	public List<PackageEntry> getDependencies() throws JSONException, IOException {
-		addDependencies(packageMeta.getJSONArray("dependencies"));
+	    System.out.println(repo.getAbsoluteURL()+"?a=getDependencies&name="+this.PackageName);
+		addDependencies(Utils.readArray(repo.getAbsoluteURL()+"?a=getDependencies&name="+this.PackageName));
 		return this.dependencies;
 	}
 
-	public List<PackageRelease> getReleases() {
+	public List<PackageRelease> getReleases() throws JSONException, IOException {
 		List<PackageRelease> rel = new ArrayList<>();
-		JSONObject releaseSet = this.packageMeta.getJSONObject("releases");
+		JSONObject releaseSet = Utils.readJsonFromUrl(repo.getAbsoluteURL()+"?a=getReleases&name="+this.PackageName);
 		Iterator<?> it = releaseSet.keys();
 		while (it.hasNext()) {
 			String key = (String) it.next();
@@ -60,7 +51,9 @@ public class PackageEntry {
 		}
 		return rel;
 	}
-
+	public JSONArray getDependenciesJSON() throws IOException {
+	   return Utils.readArray(repo.getAbsoluteURL()+"?a=getDependencies&name="+this.PackageName);
+	}
 	private void addDependencies(JSONArray depen) throws JSONException, IOException {
 		for (int i = 0; i < depen.length(); i++) {
 			JSONObject main = depen.getJSONObject(i);
@@ -69,8 +62,8 @@ public class PackageEntry {
 				this.dependencies.add(ent);
 			}
 			
-			if (ent.packageMeta.getJSONArray("dependencies").length() > 0) {
-				addDependencies(ent.packageMeta.getJSONArray("dependencies"));
+			if (ent.getDependencies().size()-1 > 0) {
+				addDependencies(ent.getDependenciesJSON());
 			} else {
 				continue;
 			}

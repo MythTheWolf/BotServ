@@ -34,7 +34,6 @@ public class Utils {
 	}
 
 	public static JSONArray readArray(String url) throws IOException {
-		System.out.println(getJSON(url, 9999));
 		return new JSONArray(getJSON(url, 99999));
 	}
 

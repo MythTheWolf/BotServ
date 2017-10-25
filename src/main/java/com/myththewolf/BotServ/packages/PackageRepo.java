@@ -1,9 +1,11 @@
 package com.myththewolf.BotServ.packages;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,7 +18,9 @@ public class PackageRepo {
 
 	public PackageRepo(String URL) throws JSONException, IOException {
 		absoluteURL = URL;
-		master = Utils.readJsonFromUrl(URL);
+	   
+		master = Utils.readJsonFromUrl(URL+"?a=repoIndex");
+
 		packages = getPackages();
 	}
 
@@ -38,9 +42,11 @@ public class PackageRepo {
 		return false;
 	}
 	public List<PackageEntry> getPackages() throws JSONException, IOException {
-		for (int i = 0; i < this.master.getJSONArray("packages").length(); i++) {
+	    JSONArray packet = Utils.readJsonFromUrl(getAbsoluteURL()+"?a=repoIndex").getJSONArray("packages");
+		for (int i = 0; i < packet.length(); i++) {
+		   
 			PackageEntry pack = new PackageEntry(
-					this.master.getJSONArray("packages").getJSONObject(i).getString("name"), this);
+					packet.getJSONObject(i).getString("name"), this);
 			if(!containsPackage(pack.getName())) {
 				this.packages.add(pack);
 			}
@@ -53,10 +59,11 @@ public class PackageRepo {
 	}
 
 	public String getAbsoluteURL() {
-		return this.absoluteURL.substring(0, (this.absoluteURL.length() - ("repo.json".length())));
+		return this.absoluteURL;
 	}
 
 	public String getDistroURL() {
+
 		return getAbsoluteURL() + "" + this.master.getString("repoBase");
 	}
 
