@@ -27,7 +27,7 @@ public class ServerPluginManager {
 	private File CURRENT_DIR;
 	private HashMap<String, Class<?>> classes = new HashMap<>();
 	private static HashMap<String, DiscordPlugin> pluginMeta = new HashMap<>();
-	
+
 	public ServerPluginManager() throws IOException {
 		System.out.println("[BotServ]Starting JarLoader....");
 		CURRENT_DIR = new File(System.getProperty("user.dir"));
@@ -52,11 +52,13 @@ public class ServerPluginManager {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void loadJar(File theJarFile)
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
 			NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
-			System.err.println("[BotServ]Error while importing " + theJarFile.getAbsolutePath() + ": No runtime config.");
+			System.err
+					.println("[BotServ]Error while importing " + theJarFile.getAbsolutePath() + ": No runtime config.");
 			return;
 		}
 		System.out.println("[BotServ]Importing " + theJarFile.getName() + " to classpath...");
@@ -66,7 +68,7 @@ public class ServerPluginManager {
 
 		URL[] urls = { new URL("jar:file:" + pathToJar + "!/") };
 		URLClassLoader cl = URLClassLoader.newInstance(urls);
-		Class<?> c;
+
 		while (e.hasMoreElements()) {
 			JarEntry je = e.nextElement();
 			if (je.isDirectory() || !je.getName().endsWith(".class")) {
@@ -75,60 +77,66 @@ public class ServerPluginManager {
 			// -6 because of .class
 			String className = je.getName().substring(0, je.getName().length() - 6);
 			className = className.replace('/', '.');
-			c = cl.loadClass(className);
-			Object obj = c.newInstance();
-			JSONObject runconfig;
-			
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(this.getExternalResource(theJarFile, "runconfig.json")));
-			String build = "";
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				build += line;
-			}
-			try {
-				if (build.equals("")) {
-					throw new JSONException("");
-				}
-				runconfig = new JSONObject(build);
-				String MAIN = runconfig.getString("main");
-				String NAME = runconfig.getString("name");
-				String AUTH = runconfig.getString("author");
-				String DESC = runconfig.getString("description");
-				String SHORTDESC = runconfig.getString("shortDescription");
-				String WEBSITE = runconfig.getString("projectURL");
-				String VERSION = runconfig.getString("version");
-			
-				if (empty(MAIN) || empty(NAME) || empty(AUTH) || empty(DESC) || empty(SHORTDESC) || empty(WEBSITE) || empty(VERSION)) {
-					System.err.println("Error while importing " + pathToJar + ": Key in runconfig.json is empty or null");
-					continue;
-				} else {
-					if (!(obj instanceof BotPlugin) && !c.getName().equals(MAIN)) {
-						continue;
-					} else if (!(obj instanceof BotPlugin) && c.getName().equals(MAIN)) {
-						System.err.println("Error while importing " + pathToJar + ": Class " + c.getName()
-								+ " does not implement " + BotPlugin.class.getName());
-						continue;
-					}
-					
-					runconfig.put("ENABLED", false);
-					classes.put(NAME, c);
-				
-					pluginMeta.put(NAME, new DiscordPlugin(runconfig));
-					enablePlugin(NAME);
-				}
-			} catch (JSONException ex) {
-				ex.printStackTrace();
-				System.err.println("Error while importing " + pathToJar + ": Invalid JSON in runconfig.json");
-				continue;
-			}
-
+			System.out.println("Loading class: "+className);
+			classes.put(className, cl.loadClass(className));
 		}
+		if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
+			System.err.println("Error while importing: " + pathToJar + ": No valid runconfig");
+			jarFile.close();
+			return;
+		}
+		JSONObject runconfig;
+		BufferedReader reader = new BufferedReader(
+				new InputStreamReader(this.getExternalResource(theJarFile, "runconfig.json")));
+		String build = "";
+		String line = "";
+
+		while ((line = reader.readLine()) != null) {
+			build += line;
+		}
+		try {
+			if(empty(build)) {
+				jarFile.close();
+				throw new JSONException("JSON File must start with `{`");
+			}
+			runconfig = new JSONObject(build);
+			String MAIN = runconfig.getString("main");
+			String NAME = runconfig.getString("name");
+			String AUTH = runconfig.getString("author");
+			String DESC = runconfig.getString("description");
+			String VERSION = runconfig.getString("version");
+			Class<?> klass = classes.get(MAIN);
+			Object runner = klass.newInstance();
+			if (!(runner instanceof BotPlugin)) {
+				System.err.println("Error while importing: " + pathToJar + ": Class " + klass.getName()
+						+ " does not implement " + BotPlugin.class.getName());
+				jarFile.close();
+				return;
+			}
+			classes.put(NAME, klass);
+			
+			File pDir = new File(PLUGIN_DIR.getAbsolutePath()+File.separator+NAME);
+			if(!pDir.exists()) {
+				pDir.mkdirs();
+			}
+			
+			pluginMeta.put(NAME, new DiscordPlugin(runconfig,theJarFile,pDir));
+			enablePlugin(NAME);
+		
+		} catch (JSONException ex) {
+			System.err.println("Error while importing " + pathToJar + ": Invalid JSON in runconfig.json: " + ex.getMessage());
+			ex.printStackTrace();
+			jarFile.close();
+			return;
+		}
+
 		jarFile.close();
 	}
+
 	protected static DiscordPlugin forName(String name) {
 		return ServerPluginManager.pluginMeta.get(name);
 	}
+
 	public void enablePlugin(String name) {
 		Class<?> RunnerClass = this.classes.get(name);
 		try {
@@ -163,25 +171,28 @@ public class ServerPluginManager {
 	public File getWorkingDir() {
 		return this.PLUGIN_DIR;
 	}
+
 	public static List<DiscordPlugin> getPlugins() throws IllegalAccessException {
 		List<DiscordPlugin> pls = new ArrayList<>();
 		Iterator<Entry<String, DiscordPlugin>> it = pluginMeta.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String,DiscordPlugin> pair = (Map.Entry<String,DiscordPlugin>)it.next();
-	        pls.add((DiscordPlugin) pair.getValue());
-	        
-	    }
+		while (it.hasNext()) {
+			Map.Entry<String, DiscordPlugin> pair = (Map.Entry<String, DiscordPlugin>) it.next();
+			pls.add((DiscordPlugin) pair.getValue());
+
+		}
 		return pls;
 	}
-	public InputStream getExternalResource(File theJar, String pathInJar)  {
+
+	public InputStream getExternalResource(File theJar, String pathInJar) {
 		try {
-		URL url = new URL("jar:file:" + theJar.getAbsolutePath() + "!/" + pathInJar);
-		InputStream is = url.openStream();
-		return is;
-		}catch (Exception e) {
+			URL url = new URL("jar:file:" + theJar.getAbsolutePath() + "!/" + pathInJar);
+			InputStream is = url.openStream();
+			return is;
+		} catch (Exception e) {
 			return null;
 		}
 	}
+
 	private boolean empty(String e) {
 		return (e == null || e.equals("") || e.equals(" "));
 	}

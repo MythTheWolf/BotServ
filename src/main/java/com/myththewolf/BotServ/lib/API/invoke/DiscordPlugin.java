@@ -1,7 +1,9 @@
 package com.myththewolf.BotServ.lib.API.invoke;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,27 +23,32 @@ public class DiscordPlugin {
 	private String NAME;
 	private String AUTH;
 	private String DESC;
-	private String SHORTDESC;
-	private String WEBSITE;
 	private String VERSION;
 	private String UPDATECONF;
 	private boolean enabled;
 	private HashMap<String, DiscordCommand> commandMap = new HashMap<>();
 	private HashMap<EventType, List<EventEntry>> events = new HashMap<>();
+	private File JAR;
 
-	public DiscordPlugin(JSONObject runconfig) {
+	public DiscordPlugin(JSONObject runconfig, File theJarFile, File file) {
 		MAIN = runconfig.getString("main");
 		NAME = runconfig.getString("name");
 		AUTH = runconfig.getString("author");
 		DESC = runconfig.getString("description");
-		SHORTDESC = runconfig.getString("shortDescription");
-		WEBSITE = runconfig.getString("projectURL");
 		VERSION = runconfig.getString("version");
-
+		JAR = theJarFile;
+		PLUGIN_DIR = file;
+		for(EventType ET : EventType.values()) {
+			events.put(ET, new ArrayList<>());
+		}
 	}
 
 	public void setEnabled(boolean en) {
 		enabled = en;
+	}
+
+	public File getSelfJar() {
+		return JAR;
 	}
 
 	public void registerCommand(String command, CommandExecutor execute) throws Exception {
@@ -74,14 +81,6 @@ public class DiscordPlugin {
 
 	public String getDESC() {
 		return DESC;
-	}
-
-	public String getSHORTDESC() {
-		return SHORTDESC;
-	}
-
-	public String getWEBSITE() {
-		return WEBSITE;
 	}
 
 	public String getVERSION() {
@@ -119,6 +118,16 @@ public class DiscordPlugin {
 					"[BotServ]WARNINIG: Class " + list.getClass().getName() + " does not have any event methods.");
 		}
 
+	}
+
+	public InputStream getInternalResource(File theJar, String pathInJar) {
+		try {
+			URL url = new URL("jar:file:" + theJar.getAbsolutePath() + "!/" + pathInJar);
+			InputStream is = url.openStream();
+			return is;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public List<EventEntry> getEventList(EventType e) {
