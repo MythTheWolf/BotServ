@@ -11,8 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.myththewolf.BotServ.lib.tool.Utils;
 import com.myththewolf.BotServ.packages.downloader.FileDownloader;
-import com.myththewolf.BotServ.packages.downloader.Utils;
 
 public class DiscordPackageManager {
     private JSONArray repos;

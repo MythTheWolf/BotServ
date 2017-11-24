@@ -11,6 +11,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+
+
 public class DiscordCommand {
 	public MessageReceivedEvent e;
 	private DiscordPlugin meta;
@@ -33,8 +35,10 @@ public class DiscordCommand {
 
 	public User getSender() {
 		return e.getAuthor();
+	} 
+	public DiscordPlugin getPlugin() {
+		return this.meta;
 	}
-
 	public void deleteTriggerMessage() {
 		e.getMessage().delete().queue();
 	}

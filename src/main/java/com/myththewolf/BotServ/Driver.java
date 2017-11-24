@@ -4,9 +4,12 @@ import java.io.File;
 
 import javax.security.auth.login.LoginException;
 
+import org.json.JSONObject;
+
 import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.tool.Tools;
+import com.myththewolf.BotServ.lib.tool.Utils;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -32,11 +35,12 @@ public class Driver implements Runnable {
 				Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
 			}
 			try {
+				JSONObject run = new JSONObject(Utils.readFile(CONF));
 				ServerPluginManager man = new ServerPluginManager();
 				man.loadDir();
 				System.out.println("[BotServ]Config OK,attempting login!");
-				runner = new JDABuilder(AccountType.CLIENT)
-						.setToken("MjMwMTY2MjI1MTM1NTk5NjE4.DJR0fA.H1inhTyIOB5Hcym7zZR9vUHXVPg").buildBlocking();
+				runner = new JDABuilder(AccountType.BOT)
+						.setToken(run.getString("token")).buildBlocking();
 				runner.addEventListener(new UserChat());
 				System.out.println("[BotServ]System up.");
 				BotServ.ready(runner);

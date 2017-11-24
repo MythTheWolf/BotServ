@@ -15,6 +15,7 @@ import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventListener;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
+import com.myththewolf.BotServ.lib.tool.Utils;
 
 public class DiscordPlugin {
 	private File PLUGIN_DIR;
@@ -38,7 +39,7 @@ public class DiscordPlugin {
 		VERSION = runconfig.getString("version");
 		JAR = theJarFile;
 		PLUGIN_DIR = file;
-		for(EventType ET : EventType.values()) {
+		for (EventType ET : EventType.values()) {
 			events.put(ET, new ArrayList<>());
 		}
 	}
@@ -57,6 +58,19 @@ public class DiscordPlugin {
 
 	public File getPLUGIN_DIR() {
 		return PLUGIN_DIR;
+	}
+
+	public File getConfig() {
+		return new File(this.PLUGIN_DIR + File.separator + "config.json");
+	}
+
+	public JSONObject getJSONConfig() {
+		return new JSONObject(Utils.readFile(getConfig()));
+	}
+
+	public void saveConfig(JSONObject root) {
+		String JSON = root.toString();
+		Utils.writeToFile(JSON, getConfig());
 	}
 
 	public File getCURRENT_DIR() {

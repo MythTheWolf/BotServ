@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.myththewolf.BotServ.packages.downloader.Utils;
+import com.myththewolf.BotServ.lib.tool.Utils;
 
 public class PackageEntry {
 	public String PackageName;

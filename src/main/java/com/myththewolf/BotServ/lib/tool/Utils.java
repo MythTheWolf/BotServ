@@ -1,4 +1,4 @@
-package com.myththewolf.BotServ.packages.downloader;
+package com.myththewolf.BotServ.lib.tool;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -87,6 +87,9 @@ public class Utils {
 	public static void writeToFile(String content, File out) {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
+		if (out.exists()) {
+			out.delete();
+		}
 
 		try {
 

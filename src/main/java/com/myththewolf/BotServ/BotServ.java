@@ -10,8 +10,8 @@ import org.json.JSONObject;
 
 import com.myththewolf.BotServ.lib.command.ConsoleCommand;
 import com.myththewolf.BotServ.lib.command.Commands.DpmInstall;
+import com.myththewolf.BotServ.lib.tool.Utils;
 import com.myththewolf.BotServ.packages.DiscordPackageManager;
-import com.myththewolf.BotServ.packages.downloader.Utils;
 
 import net.dv8tion.jda.core.JDA;
 

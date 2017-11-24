@@ -77,7 +77,7 @@ public class ServerPluginManager {
 			// -6 because of .class
 			String className = je.getName().substring(0, je.getName().length() - 6);
 			className = className.replace('/', '.');
-			System.out.println("Loading class: "+className);
+			System.out.println("Loading class: " + className);
 			classes.put(className, cl.loadClass(className));
 		}
 		if (this.getExternalResource(theJarFile, "runconfig.json") == null) {
@@ -95,7 +95,7 @@ public class ServerPluginManager {
 			build += line;
 		}
 		try {
-			if(empty(build)) {
+			if (empty(build)) {
 				jarFile.close();
 				throw new JSONException("JSON File must start with `{`");
 			}
@@ -114,17 +114,18 @@ public class ServerPluginManager {
 				return;
 			}
 			classes.put(NAME, klass);
-			
-			File pDir = new File(PLUGIN_DIR.getAbsolutePath()+File.separator+NAME);
-			if(!pDir.exists()) {
+
+			File pDir = new File(PLUGIN_DIR.getAbsolutePath() + File.separator + NAME);
+			if (!pDir.exists()) {
 				pDir.mkdirs();
 			}
-			
-			pluginMeta.put(NAME, new DiscordPlugin(runconfig,theJarFile,pDir));
+
+			pluginMeta.put(NAME, new DiscordPlugin(runconfig, theJarFile, pDir));
 			enablePlugin(NAME);
-		
+
 		} catch (JSONException ex) {
-			System.err.println("Error while importing " + pathToJar + ": Invalid JSON in runconfig.json: " + ex.getMessage());
+			System.err.println(
+					"Error while importing " + pathToJar + ": Invalid JSON in runconfig.json: " + ex.getMessage());
 			ex.printStackTrace();
 			jarFile.close();
 			return;
@@ -138,34 +139,37 @@ public class ServerPluginManager {
 	}
 
 	public void enablePlugin(String name) {
-		Class<?> RunnerClass = this.classes.get(name);
-		try {
-			Method M = RunnerClass.getMethod("onEnable", DiscordPlugin.class);
-			Object OB = RunnerClass.newInstance();
-			boolean result = (boolean) M.invoke(OB, forName(name));
-			if (result) {
-				ServerPluginManager.pluginMeta.get(name).setEnabled(true);
+		Thread runner = new Thread(() -> {
+			Class<?> RunnerClass = this.classes.get(name);
+			try {
+				Method M = RunnerClass.getMethod("onEnable", DiscordPlugin.class);
+				Object OB = RunnerClass.newInstance();
+				boolean result = (boolean) M.invoke(OB, forName(name));
+				if (result) {
+					ServerPluginManager.pluginMeta.get(name).setEnabled(true);
+				}
+			} catch (NoSuchMethodException | SecurityException e) {
+				System.err.println("[BotServ]Error while enabling plugin " + name);
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				System.err.println("[BotServ]Error while enabling plugin " + name);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				System.err.println("[BotServ]Error while enabling plugin " + name);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				System.err.println("[BotServ]Error while enabling plugin " + name);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				System.err.println("[BotServ]Error while enabling plugin " + name);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (NoSuchMethodException | SecurityException e) {
-			System.err.println("[BotServ]Error while enabling plugin " + name);
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			System.err.println("[BotServ]Error while enabling plugin " + name);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			System.err.println("[BotServ]Error while enabling plugin " + name);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			System.err.println("[BotServ]Error while enabling plugin " + name);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			System.err.println("[BotServ]Error while enabling plugin " + name);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		});
+		runner.start();
 	}
 
 	public File getWorkingDir() {
