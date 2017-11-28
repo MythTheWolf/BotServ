@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
@@ -16,6 +19,8 @@ import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventListener;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
 import com.myththewolf.BotServ.lib.tool.Utils;
+
+import net.dv8tion.jda.core.entities.Message;
 
 public class DiscordPlugin {
 	private File PLUGIN_DIR;
@@ -29,6 +34,8 @@ public class DiscordPlugin {
 	private boolean enabled;
 	private HashMap<String, DiscordCommand> commandMap = new HashMap<>();
 	private HashMap<EventType, List<EventEntry>> events = new HashMap<>();
+	private List<ManualPage> manualPages = new ArrayList<>();
+	public List<Message> helpEmbeds = new ArrayList<>();
 	private File JAR;
 
 	public DiscordPlugin(JSONObject runconfig, File theJarFile, File file) {
@@ -42,12 +49,23 @@ public class DiscordPlugin {
 		for (EventType ET : EventType.values()) {
 			events.put(ET, new ArrayList<>());
 		}
+		Arrays.stream(getManualDir().listFiles()).filter(f -> f.getName().endsWith(".man")).collect(Collectors.toList())
+				.forEach(it -> {
+					try {
+						manualPages.add(new ManualPage(this, it));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
 	}
 
 	public void setEnabled(boolean en) {
 		enabled = en;
 	}
-
+	public List<ManualPage> getManuals(){
+		return this.manualPages;
+	}
 	public File getSelfJar() {
 		return JAR;
 	}
@@ -62,6 +80,10 @@ public class DiscordPlugin {
 
 	public File getConfig() {
 		return new File(this.PLUGIN_DIR + File.separator + "config.json");
+	}
+
+	public File getManualDir() {
+		return new File(this.PLUGIN_DIR + File.separator + "manual-pages");
 	}
 
 	public JSONObject getJSONConfig() {

@@ -6,6 +6,7 @@ import javax.security.auth.login.LoginException;
 
 import org.json.JSONObject;
 
+import com.myththewolf.BotServ.lib.API.event.engines.ReactionAdd;
 import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.tool.Tools;
@@ -42,6 +43,7 @@ public class Driver implements Runnable {
 				runner = new JDABuilder(AccountType.BOT)
 						.setToken(run.getString("token")).buildBlocking();
 				runner.addEventListener(new UserChat());
+				runner.addEventListener(new ReactionAdd());
 				System.out.println("[BotServ]System up.");
 				BotServ.ready(runner);
 			} catch (IllegalArgumentException e1) {

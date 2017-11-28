@@ -3,6 +3,8 @@ package com.myththewolf.BotServ.lib.tool;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -169,5 +173,29 @@ public class Utils {
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
 		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+	public static List<String> lineify(File F){
+		List<String> lines = new ArrayList<>();
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(F);
+			//Construct BufferedReader from InputStreamReader
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+		 
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+		 
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
+		return lines;
 	}
 }

@@ -119,6 +119,11 @@ public class ServerPluginManager {
 			if (!pDir.exists()) {
 				pDir.mkdirs();
 			}
+			File manDir = new File(
+					PLUGIN_DIR.getAbsolutePath() + File.separator + NAME + File.separator + "manual-pages");
+			if (!manDir.exists()) {
+				manDir.mkdirs();
+			}
 
 			pluginMeta.put(NAME, new DiscordPlugin(runconfig, theJarFile, pDir));
 			enablePlugin(NAME);
