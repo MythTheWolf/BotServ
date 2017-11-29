@@ -6,37 +6,28 @@
 	<artifactId>BotServ</artifactId>
 	<description>				</description>
 	<repositories>
+
 		<repository>
-			<id>central</id>
-			<name>bintray</name>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>jcenter</id>
+			<name>jcenter-bintray</name>
 			<url>http://jcenter.bintray.com</url>
-		</repository>
-		<repository>
-			<id>boundless</id>
-			<name>boundless</name>
-			<url>http://repo.boundlessgeo.com/main/</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
-		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>2.1b5</version>
-		</dependency>
 
-		<dependency>
-			<groupId>me.tongfei</groupId>
-			<artifactId>progressbar</artifactId>
-			<version>0.5.5</version>
-		</dependency>
+
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.3.1_306</version>
+			<version>3.3.1_307</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
@@ -55,6 +46,7 @@
 			<version>2.8.0</version>
 			<scope>compile</scope>
 		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>

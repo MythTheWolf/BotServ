@@ -1,4 +1,4 @@
-package com.myththewolf.BotServ.lib.API.invoke;
+package com.myththewolf.BotServ.lib.API.invoke.manualpages;
 import java.text.ParseException;
 
 public class InputParser {

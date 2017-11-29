@@ -13,14 +13,18 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.myththewolf.BotServ.lib.API.command.CommandExecutor;
 import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventListener;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
+import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPage;
+import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPageEmbed;
 import com.myththewolf.BotServ.lib.tool.Utils;
-
-import net.dv8tion.jda.core.entities.Message;
 
 public class DiscordPlugin {
 	private File PLUGIN_DIR;
@@ -35,7 +39,7 @@ public class DiscordPlugin {
 	private HashMap<String, DiscordCommand> commandMap = new HashMap<>();
 	private HashMap<EventType, List<EventEntry>> events = new HashMap<>();
 	private List<ManualPage> manualPages = new ArrayList<>();
-	public List<Message> helpEmbeds = new ArrayList<>();
+	public List<ManualPageEmbed> helpEmbeds = new ArrayList<>();
 	private File JAR;
 
 	public DiscordPlugin(JSONObject runconfig, File theJarFile, File file) {
@@ -63,9 +67,11 @@ public class DiscordPlugin {
 	public void setEnabled(boolean en) {
 		enabled = en;
 	}
-	public List<ManualPage> getManuals(){
+
+	public List<ManualPage> getManuals() {
 		return this.manualPages;
 	}
+
 	public File getSelfJar() {
 		return JAR;
 	}
@@ -92,7 +98,10 @@ public class DiscordPlugin {
 
 	public void saveConfig(JSONObject root) {
 		String JSON = root.toString();
-		Utils.writeToFile(JSON, getConfig());
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		JsonParser jp = new JsonParser();
+		JsonElement je = jp.parse(JSON);
+		Utils.writeToFile(gson.toJson(je), getConfig());
 	}
 
 	public File getCURRENT_DIR() {

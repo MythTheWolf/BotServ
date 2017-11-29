@@ -1,8 +1,10 @@
-package com.myththewolf.BotServ.lib.API.invoke;
+package com.myththewolf.BotServ.lib.API.invoke.manualpages;
 
+import java.awt.Color;
 import java.io.File;
 import java.text.ParseException;
 
+import com.myththewolf.BotServ.lib.API.invoke.DiscordPlugin;
 import com.myththewolf.BotServ.lib.tool.Utils;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -43,14 +45,21 @@ public class ManualPage {
 
 	public void instaniate(TextChannel TC) {
 		EmbedBuilder EB = new EmbedBuilder();
-		EB.setTitle("Manual Page");
+		EB.setTitle("Manual Page: "+getPages());
 		try {
-			EB.addField("Synopsis", getSyn(), false);
-			EB.addField("Description", getDescription(), false);
+			EB.setColor(Color.magenta);
+			EB.addField("Synopsis", getSyn(), true);
+			EB.addField("Description", getDescription(), true);
 			Message theMessage = TC.sendMessage(EB.build()).complete();
-
-			theMessage.addReaction(TC.getGuild().getEmotesByName("arrow_backward", true).get(0)).queue();
-			pl.helpEmbeds.add(theMessage);
+			theMessage.addReaction("◀").queue();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			theMessage.addReaction("▶").queue();
+			pl.helpEmbeds.add(new ManualPageEmbed(theMessage, this));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,6 +76,6 @@ public class ManualPage {
 				break;
 			}
 		}
-		return test;
+		return test-1;
 	}
 }

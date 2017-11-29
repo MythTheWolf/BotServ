@@ -42,14 +42,12 @@
   </build>
   <repositories>
     <repository>
-      <id>central</id>
-      <name>bintray</name>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>jcenter</id>
+      <name>jcenter-bintray</name>
       <url>http://jcenter.bintray.com</url>
-    </repository>
-    <repository>
-      <id>boundless</id>
-      <name>boundless</name>
-      <url>http://repo.boundlessgeo.com/main/</url>
     </repository>
   </repositories>
   <properties>

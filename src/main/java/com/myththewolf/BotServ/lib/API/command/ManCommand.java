@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.myththewolf.BotServ.lib.API.invoke.ManualPage;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
+import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPage;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
