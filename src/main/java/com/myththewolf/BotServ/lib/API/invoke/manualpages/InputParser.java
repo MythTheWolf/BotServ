@@ -1,8 +1,10 @@
 package com.myththewolf.BotServ.lib.API.invoke.manualpages;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class InputParser {
 	private String raw;
@@ -12,14 +14,16 @@ public class InputParser {
 		raw = parse;
 	}
 
-	public HashMap<String, String> getParamsOf(String key) throws ParseException {
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Object> getParamsOf(String key) throws ParseException {
 		String in = get(key);
-		HashMap<String, String> params = new HashMap<>();
+		HashMap<String, Object> params = new HashMap<>();
 		boolean READING = false;
 		boolean gotKey = false;
 		String buildTMp = "";
 		String KEY = "";
 		String VAL = "";
+		
 		for (int i = 0; i < in.length(); i++) {
 			if (in.charAt(i) == '#') {
 				READING = true;
@@ -35,20 +39,40 @@ public class InputParser {
 				} else if (gotKey && ((in.charAt(i) == ';'))) {
 					VAL = buildTMp;
 					System.out.println("+++" + KEY + ":" + VAL);
-					params.put(KEY, VAL);
+					if(params.get(KEY) == null){
+						params.put(KEY, new ArrayList<>());
+					}
+					if(!(params.get(KEY) instanceof List<?>)){
+						throw new IllegalStateException("The internal map MUST be a arraylist at the start!");
+						
+					}
+					List<String> TMP = new ArrayList<>(((List<String>) params.get(KEY)));
+					TMP.add(VAL);
+					params.put(KEY, TMP);
 					buildTMp = "";
 					KEY = "";
 					VAL = "";
 					gotKey = false;
 					READING = false;
-
 				}
 
 			}
+			
 		}
-		return params;
+		HashMap<String, Object> newparams = new HashMap<>();
+		params.forEach((k, v) -> {
+			if(v instanceof String){
+				newparams.put(k, v);
+			}else if((v instanceof List<?> && ((List<?>) v).size() == 1)){
+				newparams.put(k, ((String)((List<?>)v).get(0)));
+			}else if((v instanceof List<?> && ((List<?>) v).size() > 1)){
+				newparams.put(k, v);
+			}else{
+				System.out.println("Unassigned key: "+k);
+			}
+		});
+		return newparams;
 	}
-
 	public boolean paramExists(String key, String name) throws ParseException {
 		return getParamsOf(key).containsKey(name);
 	}

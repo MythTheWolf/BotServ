@@ -2,6 +2,7 @@ package com.myththewolf.BotServ.lib.API.invoke.manualpages;
 
 import java.awt.Color;
 import java.text.ParseException;
+import java.util.List;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -24,33 +25,25 @@ public class ManualPageEmbed {
 
 		}
 		page++;
-		String FOOTER = mp.IP.paramExists("@page " + page, "footer") ? mp.IP.getParamsOf("@page " + page).get("footer")
+		String FOOTER = mp.IP.paramExists("@page " + page, "footer") ? (String) mp.IP.getParamsOf("@page " + page).get("footer")
 				: mp.pl.getNAME();
 		Color C = (mp.IP.paramExists("@page " + page, "color")
-				&& mp.IP.getParamsOf("@page " + page).get("color").split(",").length == 3)
-						? new Color(Integer.parseInt(mp.IP.getParamsOf("@page " + page).get("color").split(",")[0]),
-								Integer.parseInt(mp.IP.getParamsOf("@page " + page).get("color").split(",")[1]),
-								Integer.parseInt(mp.IP.getParamsOf("@page " + page).get("color").split(",")[2]))
+				&& ((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",").length == 3)
+						? new Color(Integer.parseInt(((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",")[0]),
+								Integer.parseInt(((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",")[1]),
+								Integer.parseInt(((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",")[2]))
 						: Color.CYAN;
-		String[] fieldNames = mp.IP.paramExists("@page " + page, "fieldnames")
-				? mp.IP.getParamsOf("@page " + page).get("fieldnames").split("(?<=[^\\\\\\\\]),")
-				: null;
-		String[] fieldVals = mp.IP.paramExists("@page " + page, "fieldvalues")
-				? mp.IP.getParamsOf("@page " + page).get("fieldvalues").split("(?<=[^\\\\\\\\]),")
-				: null;
-		boolean shouldDo = (fieldNames != null && fieldVals != null) && (fieldNames.length == fieldVals.length);
+	
 
 		EmbedBuilder EB = new EmbedBuilder();
 		EB.setTitle("Manual page: " + page + "/" + MAX_PAGES);
 		EB.setDescription(mp.getPage(page));
 		EB.setFooter(FOOTER, null);
 		EB.setColor(C);
-		if (shouldDo) {
-			int index = 0;
-			for(String name : fieldNames) {
-				EB.addField(name,fieldVals[index],false);
-				index++;
-			}
+		if(mp.IP.getParamsOf("@page " + page).get("field") instanceof List<?>){
+			((List<String>) mp.IP.getParamsOf("@page " + page).get("field")).forEach(con -> {
+				
+			});
 		}
 		msg.editMessage(EB.build()).queue();
 
