@@ -1,0 +1,24 @@
+@pagename{
+IsAdmin
+}
+@synopsis{
+!isadmin [User...] [n]
+The arguments for this command can be a infinate number of mentions, where the mentions represent the users you want to adminfy.
+}
+@description{
+This command adds user(s) to the admin list. See isadmin(1) for what admins can do.
+}
+
+@page 1{
+#footer=The footer;
+#color=255,0,0;
+**Admins** [n]
+Admins can add new admins, add DJs, and configure mountpoins. [n]
+Giving them this role will allow a user to manage mountpoins, (and delete them!) So please, add with caution.
+}
+@page 2{
+**JSON Configuration** [n]
+The way admins is stored is by the config.yml in `plugins/DJMaster/` [n]
+It is a JSON array located at the root JSONObject, named "Admins". [n]
+Each element in the array contains a user's ID.
+}

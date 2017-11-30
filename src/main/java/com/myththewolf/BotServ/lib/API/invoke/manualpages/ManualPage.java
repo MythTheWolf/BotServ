@@ -40,16 +40,18 @@ public class ManualPage {
 	}
 
 	public String getPage(int num) throws ParseException {
-		return IP.get("@page " + num);
+		String val = IP.get("@page " + num);
+		return val.replaceAll("^(?<!\\\\)[#].*(?<!\\\\)[=].*(?<!\\\\)[;]", "");
 	}
 
 	public void instaniate(TextChannel TC) {
 		EmbedBuilder EB = new EmbedBuilder();
-		EB.setTitle("Manual Page: "+getPages());
+		EB.setTitle("Manual Page: " + getName());
 		try {
 			EB.setColor(Color.magenta);
-			EB.addField("Synopsis", getSyn(), true);
-			EB.addField("Description", getDescription(), true);
+			EB.addField("DESCRIPTION", "```" + getDescription() + "```", false);
+			EB.addField("USAGE", "```" + getSyn() + "```", false);
+			EB.addField("INDEX", "```" + getIndex() + "```", false);
 			Message theMessage = TC.sendMessage(EB.build()).complete();
 			theMessage.addReaction("◀").queue();
 			try {
@@ -66,6 +68,15 @@ public class ManualPage {
 		}
 	}
 
+	public String getIndex() {
+		try {
+			return IP.get("@index");
+		} catch (ParseException e) {
+			System.out.println("WARNING: No index for manual page " + getName());
+		}
+		return "NULL";
+	}
+
 	public int getPages() {
 		int test = 1;
 		while (true) {
@@ -76,6 +87,6 @@ public class ManualPage {
 				break;
 			}
 		}
-		return test-1;
+		return test - 1;
 	}
 }

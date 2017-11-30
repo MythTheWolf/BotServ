@@ -20,9 +20,7 @@ public class ReactionAdd implements EventListener {
 
 	public void onReaction(User user, GenericGuildMessageReactionEvent e2, boolean isAdd) {
 		MessageReaction event = e2.getReaction();
-		if (!isAdd && ((GuildMessageReactionRemoveEvent) e2).getUser().isBot()) {
-			return;
-		}
+		
 		ALL = new ArrayList<>();
 		// ◀ ▶
 		try {
@@ -39,7 +37,8 @@ public class ReactionAdd implements EventListener {
 								MPE.incrementPage();
 
 							} catch (Exception e) {
-								MPE.getMessage().getTextChannel().sendMessage(e.getMessage()).queue();
+								e.printStackTrace();
+								//MPE.getMessage().getTextChannel().sendMessage(e.getMessage()).queue();
 							}
 
 						} else if (event.getReactionEmote().getName().equals("◀")) {

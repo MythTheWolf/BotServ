@@ -3,11 +3,11 @@ package com.myththewolf.BotServ.lib.API.event.engines;
 import java.lang.reflect.InvocationTargetException;
 
 import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
-import com.myththewolf.BotServ.lib.API.command.ManCommand;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
 import com.myththewolf.BotServ.lib.API.invoke.DiscordPlugin;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
+import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManCommand;
 import com.myththewolf.BotServ.lib.event.Objects.UserSendEvent;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
