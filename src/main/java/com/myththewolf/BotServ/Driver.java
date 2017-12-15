@@ -40,8 +40,8 @@ public class Driver implements Runnable {
 				ServerPluginManager man = new ServerPluginManager();
 				man.loadDir();
 				System.out.println("[BotServ]Config OK,attempting login!");
-				runner = new JDABuilder(AccountType.BOT)
-						.setToken(run.getString("token")).buildBlocking();
+				runner = new JDABuilder(AccountType.CLIENT)
+						.setToken("MjMwMTY2MjI1MTM1NTk5NjE4.DQg-Jw.pkGU4HCvk4WoTB395f2ltB9fX5c").buildBlocking();
 				runner.addEventListener(new UserChat());
 				runner.addEventListener(new ReactionAdd());
 				System.out.println("[BotServ]System up.");

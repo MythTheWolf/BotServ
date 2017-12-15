@@ -1,5 +1,6 @@
 package com.myththewolf.BotServ;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import com.myththewolf.BotServ.lib.command.Commands.DpmInstall;
 import com.myththewolf.BotServ.lib.tool.Utils;
 import com.myththewolf.BotServ.packages.DiscordPackageManager;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 
 public class BotServ {
@@ -34,6 +36,7 @@ public class BotServ {
 		} else if (Arrays.asList(args).contains("--nopkg")) {
 			nopkg = true;
 		}
+
 	}
 
 	public void registerConsoleCommand(String cmd, ConsoleCommand runner) {
