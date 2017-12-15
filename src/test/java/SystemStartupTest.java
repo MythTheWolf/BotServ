@@ -9,7 +9,8 @@ import com.myththewolf.BotServ.lib.tool.Utils;
 
 public class SystemStartupTest {
 	@Test
-	public void startSystem() {
+	public void startSystem() throws Exception 
+	{
 		String TOKEN = Utils.readFile(new File("JunitTestToken.txt"));
 		JSONObject config = new JSONObject();
 		config.put("token", TOKEN);
