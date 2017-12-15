@@ -4,22 +4,38 @@ import java.io.File;
 
 import javax.security.auth.login.LoginException;
 
-import org.json.JSONObject;
-
 import com.myththewolf.BotServ.lib.API.event.engines.ReactionAdd;
 import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.tool.Tools;
-import com.myththewolf.BotServ.lib.tool.Utils;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 
+/**
+ * This class represents all the control mechanisms to correctly start
+ * everything
+ * 
+ * @author MythTheWolf
+ *
+ */
 public class Driver implements Runnable {
+	/**
+	 * The settings.json file object
+	 */
 	public static File CONF;
+	/**
+	 * The {@link JDA Bot instance} when(if) the login is completed
+	 */
 	protected static JDA runner;
 
+	/**
+	 * Auto runs when the runnable is instaniated This will correctly start
+	 * everything in the proper order: 1 - Create/load configuration 2 - Load/Invoke
+	 * Plugins 3 - Start the bot 4 - Register system evvents 5 - Notify the system
+	 * that login is done and we are ready {@link BotServ#ready(JDA)}
+	 */
 	public void run() {
 		System.out.println("[BotServ]Loading configuration");
 		File RUN_DIR = new File("run/");
@@ -36,7 +52,6 @@ public class Driver implements Runnable {
 				Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
 			}
 			try {
-				JSONObject run = new JSONObject(Utils.readFile(CONF));
 				ServerPluginManager man = new ServerPluginManager();
 				man.loadDir();
 				System.out.println("[BotServ]Config OK,attempting login!");
