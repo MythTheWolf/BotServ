@@ -27,6 +27,10 @@ public class BotServ {
 	 */
 	private static DiscordPackageManager dpm;
 	/**
+	 * True if everything loaded OK and we are currently connecetd
+	 */
+	private static boolean isConnected = false;
+	/**
 	 * Used for the console input
 	 */
 	private static Scanner keyboard;
@@ -82,6 +86,7 @@ public class BotServ {
 	 *             - If we can't access settings.json
 	 */
 	protected static void ready(JDA event) throws JSONException, IOException {
+		isConnected = true;
 		if (!nopkg) {
 			JSONObject read = new JSONObject(Utils.readFile(Driver.CONF));
 			dpm = new DiscordPackageManager(read);
@@ -147,5 +152,12 @@ public class BotServ {
 			}
 		}
 		scanAgain();
+	}
+	/**
+	 * Checks if the bot is connected and online
+	 * @return True if the bot is connected and the JDA instance is active
+	 */
+	public static boolean isConnected() {
+		return isConnected;
 	}
 }

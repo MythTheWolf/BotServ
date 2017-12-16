@@ -4,10 +4,13 @@ import java.io.File;
 
 import javax.security.auth.login.LoginException;
 
+import org.json.JSONObject;
+
 import com.myththewolf.BotServ.lib.API.event.engines.ReactionAdd;
 import com.myththewolf.BotServ.lib.API.event.engines.UserChat;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.tool.Tools;
+import com.myththewolf.BotServ.lib.tool.Utils;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -40,6 +43,7 @@ public class Driver implements Runnable {
 		System.out.println("[BotServ]Loading configuration");
 		File RUN_DIR = new File("run/");
 		CONF = new File("run/settings.json");
+		JSONObject config = new JSONObject(Utils.readFile(CONF));
 		try {
 			if (!RUN_DIR.exists()) {
 				System.err.println("[BotServ]No run dir, making run and config");
@@ -55,8 +59,7 @@ public class Driver implements Runnable {
 				ServerPluginManager man = new ServerPluginManager();
 				man.loadDir();
 				System.out.println("[BotServ]Config OK,attempting login!");
-				runner = new JDABuilder(AccountType.CLIENT)
-						.setToken("MjMwMTY2MjI1MTM1NTk5NjE4.DQg-Jw.pkGU4HCvk4WoTB395f2ltB9fX5c").buildBlocking();
+				runner = new JDABuilder(AccountType.BOT).setToken(config.getString("token")).buildBlocking();
 				runner.addEventListener(new UserChat());
 				runner.addEventListener(new ReactionAdd());
 				System.out.println("[BotServ]System up.");
