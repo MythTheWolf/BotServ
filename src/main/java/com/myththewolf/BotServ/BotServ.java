@@ -65,7 +65,7 @@ public class BotServ {
 		server.start();
 		if (args == null || args.length <= 0) {
 			noTerm = false;
-		} else if (args.length > -1 && args[0].equals("--nogui")) {
+		} else if (args.length > -1 && args[0].equals("--noterm")) {
 			noTerm = true;
 		} else if (Arrays.asList(args).contains("--nopkg")) {
 			nopkg = true;
