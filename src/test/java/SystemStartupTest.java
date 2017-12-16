@@ -22,11 +22,13 @@ public class SystemStartupTest {
 			BotServ.main(args);
 		});
 		T.start();
-		System.out.println("Waiting for 5 seconds for login.");
+		System.out.println("[UNIT TEST]Waiting for 5 seconds for login.");
 		Thread.sleep(5000);
-		System.out.println("Checking if we ever connected");
+		System.out.println("[UNIT TEST]Checking if we ever connected");
 		if(!BotServ.isConnected()) {
-			throw new Exception("Could not log as the bot; Test fails.");
+			throw new Exception("[UNIT TEST]Could not log as the bot; Test fails.");
+		}else {
+			System.out.println("[UNIT TEST] Login OK, test succedded!");
 		}
 	}
 }
