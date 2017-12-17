@@ -149,7 +149,7 @@ public class ServerPluginManager {
       try {
         Method M = RunnerClass.getMethod("onEnable");
         Object OB = RunnerClass.newInstance();
-        boolean result = (boolean) M.invoke(OB, forName(name));
+        boolean result = (boolean) M.invoke(OB);
         if (result) {
           ((ImplBotPlugin) ServerPluginManager.pluginMeta.get(name)).setEnabled(true);
         }
