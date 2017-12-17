@@ -169,27 +169,6 @@ public class ImplBotPlugin implements BotPlugin {
     return this.VERSION;
   }
 
-  @Override
-  public void onEnable() {
-    throw new UnsupportedOperationException(
-        "This is not supposed to be used in this context. The end user defines this method.");
-
-  }
-
-  @Override
-  public void onDisable() {
-    throw new UnsupportedOperationException(
-        "This is not supposed to be used in this context. The end user defines this method.");
-
-  }
-
-  @Override
-  public void reload() {
-    throw new UnsupportedOperationException(
-        "This is not supposed to be used in this context. The end user defines this method.");
-
-  }
-
   public List<ManualPageEmbed> getHelpEmbeds() {
     return this.helpEmbeds;
   }

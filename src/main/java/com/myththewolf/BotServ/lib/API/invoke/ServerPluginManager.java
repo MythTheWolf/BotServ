@@ -107,9 +107,9 @@ public class ServerPluginManager {
       String VERSION = runconfig.getString("version");
       Class<?> klass = classes.get(MAIN);
       Object runner = klass.newInstance();
-      if (!(runner instanceof PluginAdapater)) {
+      if (!(runner instanceof PluginAdapter)) {
         System.err.println("Error while importing: " + pathToJar + ": Class " + klass.getName()
-            + " does not implement " + PluginAdapater.class.getName());
+            + " does not implement " + PluginAdapter.class.getName());
         jarFile.close();
         return;
       }
