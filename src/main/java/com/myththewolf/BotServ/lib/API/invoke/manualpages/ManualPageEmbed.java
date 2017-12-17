@@ -19,14 +19,15 @@ public class ManualPageEmbed {
 		mp = MP;
 	}
 
-	public void incrementPage() throws IllegalArgumentException, ParseException {
+	@SuppressWarnings("unchecked")
+  public void incrementPage() throws IllegalArgumentException, ParseException {
 		if (page + 1 > MAX_PAGES) {
 			throw new IllegalArgumentException("O.O.B");
 
 		}
 		page++;
 		String FOOTER = mp.IP.paramExists("@page " + page, "footer") ? (String) mp.IP.getParamsOf("@page " + page).get("footer")
-				: mp.pl.getNAME();
+				: mp.pl.getPluginName();
 		Color C = (mp.IP.paramExists("@page " + page, "color")
 				&& ((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",").length == 3)
 						? new Color(Integer.parseInt(((String) mp.IP.getParamsOf("@page " + page).get("color")).split(",")[0]),

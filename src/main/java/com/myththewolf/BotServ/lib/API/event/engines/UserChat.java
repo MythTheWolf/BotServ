@@ -1,15 +1,13 @@
 package com.myththewolf.BotServ.lib.API.event.engines;
 
 import java.lang.reflect.InvocationTargetException;
-
 import com.myththewolf.BotServ.lib.API.command.DiscordCommand;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
-import com.myththewolf.BotServ.lib.API.invoke.DiscordPlugin;
+import com.myththewolf.BotServ.lib.API.invoke.BotPlugin;
 import com.myththewolf.BotServ.lib.API.invoke.ServerPluginManager;
 import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManCommand;
 import com.myththewolf.BotServ.lib.event.Objects.UserSendEvent;
-
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -24,7 +22,7 @@ public class UserChat extends ListenerAdapter {
 				ManCommand mC = new ManCommand();
 				mC.onCommand(event.getMessage().getContent().split(" "), event);
 			}
-			for(DiscordPlugin I : ServerPluginManager.getPlugins()) {
+      for (BotPlugin I : ServerPluginManager.getPlugins()) {
 				if(I.getCommands().containsKey(event.getMessage().getContent().split(" ")[0])) {
 					
 					DiscordCommand DC = I.getCommands().get(event.getMessage().getContent().split(" ")[0]);
