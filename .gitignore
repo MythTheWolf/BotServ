@@ -1,2 +1,4 @@
 /target/
 .classpath
+JunitTestToken.txt
+/run/

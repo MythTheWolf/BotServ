@@ -22,8 +22,8 @@ public class SystemStartupTest {
 			BotServ.main(args);
 		});
 		T.start();
-		System.out.println("[UNIT TEST]Waiting for 5 seconds for login.");
-		Thread.sleep(5000);
+		System.out.println("[UNIT TEST]Waiting for 10 seconds for login.");
+		Thread.sleep(10000);
 		System.out.println("[UNIT TEST]Checking if we ever connected");
 		if(!BotServ.isConnected()) {
 			throw new Exception("[UNIT TEST]Could not log as the bot; Test fails.");

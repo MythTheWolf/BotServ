@@ -127,7 +127,7 @@ public class ServerPluginManager {
 
       pluginMeta.put(NAME, new ImplBotPlugin(runconfig, theJarFile, pDir));
       enablePlugin(NAME);
-
+      System.out.println("New:" + pluginMeta.get(NAME).getJSONConfig().toString());
     } catch (JSONException ex) {
       System.err.println("Error while importing " + pathToJar + ": Invalid JSON in runconfig.json: "
           + ex.getMessage());
@@ -148,13 +148,15 @@ public class ServerPluginManager {
       Class<?> RunnerClass = this.classes.get(name);
       try {
         Method M = RunnerClass.getMethod("onEnable", BotPlugin.class);
-        Object OB = RunnerClass.newInstance();
-        boolean result = (boolean) M.invoke(OB, forName(name));
-        if (result) {
-          ((ImplBotPlugin) ServerPluginManager.pluginMeta.get(name)).setEnabled(true);
+        if (M == null) {
+          return;
         }
+        Object OB = RunnerClass.newInstance();
+
+        M.invoke(OB, forName(name));
+        ((ImplBotPlugin) ServerPluginManager.pluginMeta.get(name)).setEnabled(true);
       } catch (NoSuchMethodException | SecurityException e) {
-        System.err.println("[BotServ]Error while enabling plugin " + name);
+        System.err.println("[BotServ]Error while enabling plugin " + name + " Method missing");
         e.printStackTrace();
       } catch (InstantiationException e) {
         System.err.println("[BotServ]Error while enabling plugin " + name);
