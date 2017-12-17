@@ -147,7 +147,7 @@ public class ServerPluginManager {
     Thread runner = new Thread(() -> {
       Class<?> RunnerClass = this.classes.get(name);
       try {
-        Method M = RunnerClass.getMethod("onEnable", BotPlugin.class);
+        Method M = RunnerClass.getMethod("onEnable");
         Object OB = RunnerClass.newInstance();
         boolean result = (boolean) M.invoke(OB, forName(name));
         if (result) {
