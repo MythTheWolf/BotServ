@@ -30,7 +30,7 @@ public class Driver implements Runnable {
   /**
    * Auto runs when the runnable is instaniated This will correctly start everything in the proper
    * order: 1 - Create/load configuration 2 - Load/Invoke Plugins 3 - Start the bot 4 - Register
-   * system evvents 5 - Notify the system that login is done and we are ready
+   * system events 5 - Notify the system that login is done and we are ready
    * {@link BotServ#ready(JDA)}
    */
   public void run() {
@@ -56,10 +56,12 @@ public class Driver implements Runnable {
             new JDABuilder(AccountType.BOT).setToken(config.getString("token")).buildBlocking();
         runner.addEventListener(new UserChat());
         runner.addEventListener(new ReactionAdd());
-      
+
         BotServ.ready(runner);
 
-      
+        System.out.println("[BotServ]System up.");
+        BotServ.initpropt();
+        BotServ.scanAgain();
       } catch (IllegalArgumentException e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();

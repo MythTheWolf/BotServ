@@ -106,11 +106,7 @@ public class BotServ {
       dpm = new DiscordPackageManager(read);
     }
     registerCommands();
-    System.out.println("[BotServ]System up.");
-    if (!noTerm) {
-      keyboard = new Scanner(System.in);
-      scanAgain();
-    }
+
   }
 
   /**
@@ -130,11 +126,20 @@ public class BotServ {
   private static void registerCommands() {
     registerSysConsoleCommand("dpm-install", new DpmInstall(dpm));
   }
+  /**
+   * Sets up the console prompt
+   */
+  protected static void initpropt() {
+    if (!noTerm) {
+      keyboard = new Scanner(System.in);
+      scanAgain();
+    }
+  }
 
   /**
    * Re-enables the console prompt
    */
-  private static void scanAgain() {
+  protected static void scanAgain() {
     System.out.print(">");
 
     try {
