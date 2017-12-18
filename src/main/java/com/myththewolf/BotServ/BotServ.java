@@ -78,17 +78,28 @@ public class BotServ {
    * @param event - The {@link JDA Bot instance}
    * @throws JSONException - If we encountered a error while reading the settings.json
    * @throws IOException - If we can't access settings.json
-   * @throws InvocationTargetException 
-   * @throws IllegalArgumentException 
-   * @throws SecurityException 
-   * @throws NoSuchMethodException 
-   * @throws IllegalAccessException 
-   * @throws InstantiationException 
-   * @throws ClassNotFoundException 
+   * @throws InvocationTargetException
+   * @throws IllegalArgumentException
+   * @throws SecurityException
+   * @throws NoSuchMethodException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   * @throws ClassNotFoundException
    */
-  protected static void ready(JDA event) throws JSONException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-    ServerPluginManager man = new ServerPluginManager(event);
-    man.loadDir();
+  protected static void ready(JDA event) throws IOException {
+    Thread T = new Thread(() -> {
+      ServerPluginManager man;
+      try {
+        man = new ServerPluginManager(event);
+        man.loadDir();
+      } catch (IOException | ClassNotFoundException | InstantiationException
+          | IllegalAccessException | NoSuchMethodException | SecurityException
+          | IllegalArgumentException | InvocationTargetException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    });
+    T.start();
     isConnected = true;
     if (!nopkg) {
       JSONObject read = new JSONObject(Utils.readFile(Driver.CONF));
