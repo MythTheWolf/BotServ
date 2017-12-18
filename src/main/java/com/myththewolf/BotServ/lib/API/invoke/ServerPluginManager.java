@@ -153,8 +153,7 @@ public class ServerPluginManager {
     ImplBotPlugin cast = (ImplBotPlugin) arg0;
     InputStream internal = cast.getInternalResource(cast.getSelfJar(), "config.json");
     if (!config.exists()) {
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(internal));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(internal));
       String build = "";
       String line = "";
 
@@ -166,7 +165,7 @@ public class ServerPluginManager {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      
+
       Utils.writeToFile(build, config);
     }
     Thread runner = new Thread(() -> {

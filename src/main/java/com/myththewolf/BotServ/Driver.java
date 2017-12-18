@@ -51,8 +51,7 @@ public class Driver implements Runnable {
         Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
       }
       try {
-        ServerPluginManager man = new ServerPluginManager(runner);
-        man.loadDir();
+       
         System.out.println("[BotServ]Config OK,attempting login!");
         runner =
             new JDABuilder(AccountType.BOT).setToken(config.getString("token")).buildBlocking();
