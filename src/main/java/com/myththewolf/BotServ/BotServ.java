@@ -106,6 +106,7 @@ public class BotServ {
       dpm = new DiscordPackageManager(read);
     }
     registerCommands();
+    System.out.println("[BotServ]System up.");
     if (!noTerm) {
       keyboard = new Scanner(System.in);
       scanAgain();

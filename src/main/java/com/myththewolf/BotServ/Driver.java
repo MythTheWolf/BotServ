@@ -50,14 +50,16 @@ public class Driver implements Runnable {
         Tools.ExportResource("settings.json", Driver.class, "run/settings.json");
       }
       try {
-       
+
         System.out.println("[BotServ]Config OK,attempting login!");
         runner =
             new JDABuilder(AccountType.BOT).setToken(config.getString("token")).buildBlocking();
         runner.addEventListener(new UserChat());
         runner.addEventListener(new ReactionAdd());
-        System.out.println("[BotServ]System up.");
+      
         BotServ.ready(runner);
+
+      
       } catch (IllegalArgumentException e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();
