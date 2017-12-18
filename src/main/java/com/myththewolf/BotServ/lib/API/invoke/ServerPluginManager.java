@@ -20,14 +20,18 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.myththewolf.BotServ.lib.tool.Utils;
+import net.dv8tion.jda.core.JDA;
 
 public class ServerPluginManager {
   private File PLUGIN_DIR;
   private File CURRENT_DIR;
   private HashMap<String, Class<?>> classes = new HashMap<>();
+  private JDA JDARUNNER;
   private static HashMap<String, BotPlugin> pluginMeta = new HashMap<>();
 
-  public ServerPluginManager() throws IOException {
+  public ServerPluginManager(JDA inst) throws IOException {
+    JDARUNNER = inst;
     System.out.println("[BotServ]Starting JarLoader....");
     CURRENT_DIR = new File(System.getProperty("user.dir"));
     PLUGIN_DIR = new File(System.getProperty("user.dir") + "/run/plugins/");
@@ -125,9 +129,8 @@ public class ServerPluginManager {
         manDir.mkdirs();
       }
 
-      pluginMeta.put(NAME, new ImplBotPlugin(runconfig, theJarFile, pDir));
+      pluginMeta.put(NAME, new ImplBotPlugin(runconfig, theJarFile, pDir, JDARUNNER));
       enablePlugin(NAME);
-      System.out.println("New:" + pluginMeta.get(NAME).getJSONConfig().toString());
     } catch (JSONException ex) {
       System.err.println("Error while importing " + pathToJar + ": Invalid JSON in runconfig.json: "
           + ex.getMessage());
@@ -144,6 +147,28 @@ public class ServerPluginManager {
   }
 
   public void enablePlugin(String name) {
+    BotPlugin arg0 = forName(name);
+
+    File config = arg0.getConfig();
+    ImplBotPlugin cast = (ImplBotPlugin) arg0;
+    InputStream internal = cast.getInternalResource(cast.getSelfJar(), "config.json");
+    if (!config.exists()) {
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(internal));
+      String build = "";
+      String line = "";
+
+      try {
+        while ((line = reader.readLine()) != null) {
+          build += line;
+        }
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+      Utils.writeToFile(build, config);
+    }
     Thread runner = new Thread(() -> {
       Class<?> RunnerClass = this.classes.get(name);
       try {

@@ -23,6 +23,7 @@ import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
 import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPage;
 import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPageEmbed;
 import com.myththewolf.BotServ.lib.tool.Utils;
+import net.dv8tion.jda.core.JDA;
 
 public class ImplBotPlugin implements BotPlugin {
   private File PLUGIN_DIR;
@@ -37,8 +38,9 @@ public class ImplBotPlugin implements BotPlugin {
   private List<ManualPage> manualPages = new ArrayList<>();
   private List<ManualPageEmbed> helpEmbeds = new ArrayList<>();
   private File JAR;
+  private JDA runner;
 
-  public ImplBotPlugin(JSONObject runconfig, File theJarFile, File file) {
+  public ImplBotPlugin(JSONObject runconfig, File theJarFile, File file,JDA runner) {
     MAIN = runconfig.getString("main");
     NAME = runconfig.getString("name");
     AUTH = runconfig.getString("author");
@@ -46,6 +48,7 @@ public class ImplBotPlugin implements BotPlugin {
     VERSION = runconfig.getString("version");
     JAR = theJarFile;
     PLUGIN_DIR = file;
+    this.runner = runner;
     for (EventType ET : EventType.values()) {
       events.put(ET, new ArrayList<>());
     }
@@ -171,6 +174,11 @@ public class ImplBotPlugin implements BotPlugin {
 
   public List<ManualPageEmbed> getHelpEmbeds() {
     return this.helpEmbeds;
+  }
+
+  @Override
+  public JDA getJDAInstance() {
+    return this.runner;
   }
 }
 

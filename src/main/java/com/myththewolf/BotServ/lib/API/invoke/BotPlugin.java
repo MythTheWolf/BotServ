@@ -10,8 +10,9 @@ import com.myththewolf.BotServ.lib.API.event.Interfaces.EventEntry;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventListener;
 import com.myththewolf.BotServ.lib.API.event.Interfaces.EventType;
 import com.myththewolf.BotServ.lib.API.invoke.manualpages.ManualPage;
+import net.dv8tion.jda.core.JDA;
 
-public interface BotPlugin{
+public interface BotPlugin {
   public List<ManualPage> getManuals();
 
   public void registerCommand(String command, CommandExecutor execute) throws Exception;
@@ -19,6 +20,8 @@ public interface BotPlugin{
   public File getPLUGIN_DIR();
 
   public File getConfig();
+
+  public JDA getJDAInstance();
 
   public File getManualDir();
 
