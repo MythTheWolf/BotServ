@@ -107,7 +107,6 @@ public class InputParser {
 		Arrays.stream(fin.split("\\[n\\]")).forEach(i -> {
 			BUILDER += i + "\n";
 		});
-		System.out.println("OUT--->" + BUILDER);
 		return BUILDER;
 	}
 
