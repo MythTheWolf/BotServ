@@ -23,6 +23,8 @@ public class ManualPageEmbed {
     public void incrementPage() throws IllegalArgumentException, ParseException {
         if (page + 1 > MAX_PAGES) {
             page = 0;
+            decremntPage();
+            return;
         } else {
             page++;
         }
@@ -52,7 +54,6 @@ public class ManualPageEmbed {
 
     public void decremntPage() throws IllegalArgumentException, ParseException {
         if (page == 0) {
-            page = 0;
             EmbedBuilder EB = new EmbedBuilder();
             EB.setTitle("Manual Page: " + mp.getName());
 
