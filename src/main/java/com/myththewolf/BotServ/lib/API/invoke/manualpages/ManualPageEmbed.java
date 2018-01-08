@@ -67,6 +67,7 @@ public class ManualPageEmbed {
 
         if ((page - 1 < 0)) {
             page = MAX_PAGES;
+            return;
         } else {
             page--;
         }
