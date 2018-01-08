@@ -63,9 +63,6 @@ public class ReactionAdd implements EventListener {
       if (((GenericGuildMessageReactionEvent) arg0).getUser().isBot()) {
         return;
       }
-      if (arg0 instanceof GuildMessageReactionRemoveEvent) {
-        return;
-      }
       boolean isAdd = (arg0 instanceof GuildMessageReactionAddEvent);
       if (isAdd) {
         // System.out.println("Added reaction: " + ((GenericGuildMessageReactionEvent)
